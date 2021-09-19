@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.example</groupId>
+  <artifactId>HelloWorld_CI_CD</artifactId>
+  <versioning>
+    <versions>
+      <version>1.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20210919155059</lastUpdated>
+  </versioning>
+</metadata>
