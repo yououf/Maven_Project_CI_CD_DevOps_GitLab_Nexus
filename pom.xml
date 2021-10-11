@@ -30,7 +30,7 @@
         <hamcrest.version>1.3</hamcrest.version>
         <mockito.version>2.21.0</mockito.version>
         <jacoco.plugin.version>0.8.1</jacoco.plugin.version>
-        <github.global.oauth2Token>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</github.global.oauth2Token>
+        <github.global.oauth2Token>blablabla</github.global.oauth2Token>
         <buildDirectory>${project.basedir}/target</buildDirectory>
     </properties>
 
