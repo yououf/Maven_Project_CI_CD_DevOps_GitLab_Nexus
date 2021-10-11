@@ -1,0 +1,52 @@
+stages:
+    - build
+    - test
+    - release
+    - deploy
+
+include:
+    - remote: 'https://jobs.r2devops.io/latest/maven_build.yml'
+
+maven_test:
+  image:
+    name: maven:3.6.3-jdk-11
+    entrypoint: [""]
+  stage: test
+  variables:
+    ARTIFACTS_DIR: ${CI_PROJECT_DIR}/target
+  script:
+      - echo ${ARTIFACTS_DIR}
+      - mkdir -p ${ARTIFACTS_DIR}
+      - mvn -B clean test -DartifactsDirectory=${ARTIFACTS_DIR}      
+      - cat ${ARTIFACTS_DIR}/site/jacoco/jacoco.csv | awk -F"," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, "instructions covered"; print 100*covered/instructions, "% covered" }'
+  artifacts:
+    when: always
+    paths:
+      - "${ARTIFACTS_DIR}/surefire-reports/TEST-*.xml"
+    reports:
+      junit:
+        - "${ARTIFACTS_DIR}/surefire-reports/TEST-*.xml"
+  coverage: '/^(\d+.\d+\ %) covered$/'
+
+release:
+  image: 
+    name: maven:3.6.3-jdk-11
+  stage: release
+  script:
+    - mvn $MAVEN_CLI_OPTS package -Dmaven.test.skip=true
+    - echo "Packaging the code"
+  artifacts:
+    paths:
+      - target/*.jar
+  only:
+    - master
+
+Codedeploy:
+  image:
+    name: maven:3.6.3-jdk-11
+  stage: deploy 
+  script: 
+   - mvn -X $MAVEN_CLI_OPTS deploy -Dmaven.test.skip=true 
+   - echo "installing the package in local repository" 
+  only: 
+   - master
